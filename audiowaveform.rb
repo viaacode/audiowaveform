@@ -6,7 +6,7 @@ class Sound
 
     FFMPEG_BINARY = '/usr/local/bin/ffmpeg'
     FFMPEG_CODEC = 'pcm_s16le'
-    FFMPEG_FORMAT = 'aiff'  # libsndfile supports more codecs in aiff then in wav
+    FFMPEG_FORMAT = 'wav'  # libsndfile supports more codecs in aiff then in wav
     # remove video, remux stereo to mono, output to stdout
     FFMPEG_OPTIONS = "-y -vn -acodec #{FFMPEG_CODEC} -ac 1 -f #{FFMPEG_FORMAT} pipe:1"
 
@@ -15,7 +15,7 @@ class Sound
     FFMPEG_COMMAND = "#{FFMPEG_BINARY} #{FFMPEG_OPTIONS} -i"
     FFMPEG_LOGFILE = 'log/ffmpeg.log'
 
-    def initialize source:, zoom: 2048, pixels_per_second: nil
+    def initialize source:, zoom: 4800, pixels_per_second: nil
         @zoom = zoom
         @pixels_per_second = pixels_per_second 
         @buffer = nil
@@ -67,11 +67,11 @@ class Sound
         while read
             min = @buffer.min
             max = @buffer.max
-            data << ( min/256 + 1 ) << ( max/256 )
+            data << ( min  ) << ( max )
         end
         { sample_rate: sample_rate,
           samples_per_pixel: samples_per_pixel,
-          bits: 8,
+          bits: 16,
           length: data.length / 2,
           data: data
         }
